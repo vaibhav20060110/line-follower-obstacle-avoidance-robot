@@ -1,8 +1,59 @@
-# line-follower-obstacle-avoidance-robot
-Arduino-based autonomous robot with line following and obstacle avoidance using IR sensors and ultrasonic sensors.
 # 🤖 Autonomous Line Follower and Obstacle Avoidance Robot
 
-This project is an Arduino-based autonomous robot capable of following a line and avoiding obstacles using multiple sensors. The robot uses IR sensors for line detection and ultrasonic sensors for obstacle detection, enabling intelligent and autonomous navigation.
+![Robot Front View](robot_front.jpeg)
+![Robot Top View](robot_top_view.jpg)
+
+An autonomous robot built using Arduino that can follow a black line and avoid obstacles intelligently using IR sensors and ultrasonic sensors. This project demonstrates embedded systems programming, sensor integration, and autonomous navigation.
+
+---
+
+# 🚀 Features
+
+* Line following using IR sensors
+* Obstacle detection using ultrasonic sensors
+* Automatic obstacle avoidance
+* Real-time sensor processing
+* Autonomous navigation
+* PWM motor speed control
+
+---
+
+# 🧰 Components Used
+
+| Component                    | Quantity |
+| ---------------------------- | -------- |
+| Arduino UNO                  | 1        |
+| L298N Motor Driver           | 1        |
+| BO Motors                    | 2        |
+| Ultrasonic Sensors (HC-SR04) | 3        |
+| IR Sensors                   | 3        |
+| Robot Chassis                | 1        |
+| Wheels                       | 2        |
+| Caster Wheel                 | 1        |
+| Battery Pack                 | 1        |
+| Jumper Wires                 | Multiple |
+
+---
+
+# ⚙️ Working Principle
+
+## Line Following
+
+* IR sensors detect the black line
+* Robot moves forward, left, or right based on sensor input
+* Robot automatically recovers if line is lost
+
+## Obstacle Avoidance
+
+* Ultrasonic sensors measure distance continuously
+* Robot stops when obstacle detected
+* Robot chooses safest direction automatically
+
+---
+
+# 🔌 Circuit Diagram
+
+![Circuit Diagram](circuit_diagram.png)
 
 ---
 
@@ -10,72 +61,87 @@ This project is an Arduino-based autonomous robot capable of following a line an
 
 ## Front View
 
-![Front View](robot_front.jpg)
+![Front View](robot_front.jpeg)
 
-This front view shows:
+## Top View
 
-* 3 × Ultrasonic Sensors for obstacle detection (Left, Middle, Right)
-* 3 × IR Sensors for line detection
-* Arduino UNO as main controller
-* Compact and efficient sensor placement for maximum detection accuracy
+![Top View](robot_top_view.jpg)
 
 ---
 
-# 🚀 Features
-
-• Line following using IR sensors
-• Obstacle detection using 3 ultrasonic sensors
-• Smart obstacle avoidance
-• Autonomous navigation
-• Real-time sensor processing
-• Efficient motor control
-
----
-
-# 🧰 Components Used
-
-* Arduino UNO
-* L298N Motor Driver
-* 2 × BO Motors
-* 3 × Ultrasonic Sensors (HC-SR04)
-* 3 × IR Sensors
-* Robot Chassis
-* Wheels and Caster Wheel
-* Battery Pack
-* Jumper Wires
-
----
-
-# ⚙️ System Architecture
-
-* Arduino reads input from IR and Ultrasonic sensors
-* Processes sensor data in real-time
-* Controls motors using motor driver
-* Makes navigation decisions automatically
-
----
-
-# 💻 Code
+# 💻 Source Code
 
 The complete Arduino code is available in:
 
 robot_code.ino
 
+The code handles:
+
+* Sensor reading
+* Motor control
+* Obstacle detection
+* Autonomous navigation logic
+
+---
+
+# 🧠 Technologies Used
+
+* Arduino (C++)
+* Embedded Systems
+* Sensor Integration
+* Autonomous Robot Logic
+* Motor Driver Control
+
 ---
 
 # 🎯 Applications
 
-* Autonomous robots
 * Robotics competitions
-* Embedded systems projects
+* Autonomous robots
+* Embedded systems learning
 * Smart navigation systems
 
 ---
 
-# 👨‍💻 Author
+# 👨‍💻 Team Members and Contributions
 
-Vaibhav Rawat
+This project was developed collaboratively:
+
+* **Vaibhav Rawat**
+  Role: Programming, debugging, and implementation of robot logic
+  Instagram: https://instagram.com/your_instagram_username
+
+* **Anupam Chaurasiya**
+  Role: Hardware assembly and mechanical setup
+  Instagram: https://instagram.com/anupam_instagram_username
+
+* **Devang Rai**
+  Role: Circuit connections and sensor interfacing
+  Instagram: https://instagram.com/devang_instagram_username
 
 ---
 
-# ⭐ Please star the repository if you like this project!
+# 🤝 Teamwork Summary
+
+This project demonstrates teamwork in robotics, combining programming, hardware assembly, and circuit integration to build a fully autonomous robot.
+
+---
+
+# 🔮 Future Improvements
+
+* PID control for smoother movement
+* Bluetooth or WiFi control
+* Camera integration
+* AI-based navigation
+
+---
+
+# 📜 License
+
+This project is licensed under the MIT License.
+
+---
+
+# ⭐ Support
+
+If you like this project, please star ⭐ the repository.
