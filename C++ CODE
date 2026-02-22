@@ -1,0 +1,278 @@
+// =====================================================
+// AUTONOMOUS LINE FOLLOWER + OBSTACLE AVOIDANCE ROBOT
+// Author: Vaibhav Rawat
+// Description:
+// This robot follows a black line using IR sensors and
+// avoids obstacles using 3 ultrasonic sensors.
+// =====================================================
+
+
+// ===== IR SENSOR PINS =====
+// These sensors detect the black line
+#define L 12   // Left IR sensor
+#define M 11   // Middle IR sensor
+#define R 7    // Right IR sensor
+
+
+// ===== MOTOR DRIVER PINS =====
+// These pins control motor direction
+#define LM1 2  // Left Motor direction pin 1
+#define LM2 3  // Left Motor direction pin 2
+#define RM1 4  // Right Motor direction pin 1
+#define RM2 5  // Right Motor direction pin 2
+
+
+// ===== MOTOR SPEED CONTROL PINS (PWM) =====
+// These pins control motor speed using PWM
+#define ENA 10 // Enable pin for Left Motor
+#define ENB 9  // Enable pin for Right Motor
+
+
+// ===== ULTRASONIC SENSOR PINS =====
+// Used for obstacle detection
+
+#define TRIG_L A0   // Trigger pin for Left ultrasonic sensor
+#define ECHO_L A1   // Echo pin for Left ultrasonic sensor
+
+#define TRIG_C A2   // Trigger pin for Center ultrasonic sensor
+#define ECHO_C A3   // Echo pin for Center ultrasonic sensor
+
+#define TRIG_R A4   // Trigger pin for Right ultrasonic sensor
+#define ECHO_R A5   // Echo pin for Right ultrasonic sensor
+
+
+// Minimum safe distance (in cm)
+#define OBSTACLE_DISTANCE 15
+
+
+// Motor speed value (0 to 255)
+int speedValue = 150;
+
+
+
+// =====================================================
+// SETUP FUNCTION (Runs once at startup)
+// =====================================================
+
+void setup()
+{
+  // Configure IR sensor pins as input
+  pinMode(L, INPUT);
+  pinMode(M, INPUT);
+  pinMode(R, INPUT);
+
+  // Configure motor pins as output
+  pinMode(LM1, OUTPUT);
+  pinMode(LM2, OUTPUT);
+  pinMode(RM1, OUTPUT);
+  pinMode(RM2, OUTPUT);
+
+  // Configure enable pins as output
+  pinMode(ENA, OUTPUT);
+  pinMode(ENB, OUTPUT);
+
+  // Set motor speed using PWM
+  analogWrite(ENA, speedValue);
+  analogWrite(ENB, speedValue);
+
+  // Configure ultrasonic pins
+  pinMode(TRIG_L, OUTPUT);
+  pinMode(ECHO_L, INPUT);
+
+  pinMode(TRIG_C, OUTPUT);
+  pinMode(ECHO_C, INPUT);
+
+  pinMode(TRIG_R, OUTPUT);
+  pinMode(ECHO_R, INPUT);
+
+  // Start Serial Monitor for debugging
+  Serial.begin(9600);
+  Serial.println("ROBOT READY");
+}
+
+
+
+// =====================================================
+// MAIN LOOP FUNCTION (Runs continuously)
+// =====================================================
+
+void loop()
+{
+  // Measure distance from all ultrasonic sensors
+  long distL = getDistance(TRIG_L, ECHO_L);
+  long distC = getDistance(TRIG_C, ECHO_C);
+  long distR = getDistance(TRIG_R, ECHO_R);
+
+  // Print distance values for debugging
+  Serial.print("UL:");
+  Serial.print(distL);
+  Serial.print(" UC:");
+  Serial.print(distC);
+  Serial.print(" UR:");
+  Serial.println(distR);
+
+
+  // ===== OBSTACLE DETECTION LOGIC =====
+  // If obstacle detected in center
+  if (distC < OBSTACLE_DISTANCE)
+  {
+    Serial.println("Obstacle detected!");
+
+    // Stop robot first
+    stopMotors();
+    delay(100);
+
+    // Turn towards safer direction
+    if (distL > distR)
+    {
+      turnLeft();
+      delay(300);
+    }
+    else
+    {
+      turnRight();
+      delay(300);
+    }
+
+    return; // Skip line following for this cycle
+  }
+
+
+  // ===== LINE FOLLOWING LOGIC =====
+  // Read IR sensors
+  // Inverted because sensor gives LOW on black line
+  int left   = !digitalRead(L);
+  int middle = !digitalRead(M);
+  int right  = !digitalRead(R);
+
+  // Print IR values for debugging
+  Serial.print("L=");
+  Serial.print(left);
+  Serial.print(" M=");
+  Serial.print(middle);
+  Serial.print(" R=");
+  Serial.println(right);
+
+
+  // Move forward if only middle detects line
+  if (middle == 1 && left == 0 && right == 0)
+  {
+    forward();
+  }
+
+  // Turn left if line detected on left
+  else if (left == 1 && middle == 1 && right == 0)
+  {
+    turnLeft();
+  }
+
+  else if (left == 1 && middle == 0 && right == 0)
+  {
+    turnLeft();
+  }
+
+  // Turn right if line detected on right
+  else if (right == 1 && middle == 1 && left == 0)
+  {
+    turnRight();
+  }
+
+  else if (right == 1 && middle == 0 && left == 0)
+  {
+    turnRight();
+  }
+
+  // Move forward if all sensors detect line
+  else if (left == 1 && middle == 1 && right == 1)
+  {
+    forward();
+  }
+
+  // Line lost → try to recover
+  else
+  {
+    turnLeft();
+    delay(120);
+  }
+
+  delay(30); // small delay for stability
+}
+
+
+
+// =====================================================
+// FUNCTION: Measure distance using ultrasonic sensor
+// Returns distance in centimeters
+// =====================================================
+
+long getDistance(int trigPin, int echoPin)
+{
+  // Send trigger pulse
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+
+  digitalWrite(trigPin, LOW);
+
+  // Measure echo time
+  long duration = pulseIn(echoPin, HIGH, 30000);
+
+  // If no signal received, return large value
+  if (duration == 0)
+    return 999;
+
+  // Convert time to distance
+  return duration * 0.034 / 2;
+}
+
+
+
+// =====================================================
+// MOTOR CONTROL FUNCTIONS
+// =====================================================
+
+
+// Move robot forward
+void forward()
+{
+  digitalWrite(LM1, HIGH);
+  digitalWrite(LM2, LOW);
+
+  digitalWrite(RM1, HIGH);
+  digitalWrite(RM2, LOW);
+}
+
+
+// Turn robot left
+void turnLeft()
+{
+  digitalWrite(LM1, LOW);
+  digitalWrite(LM2, HIGH);
+
+  digitalWrite(RM1, HIGH);
+  digitalWrite(RM2, LOW);
+}
+
+
+// Turn robot right
+void turnRight()
+{
+  digitalWrite(LM1, HIGH);
+  digitalWrite(LM2, LOW);
+
+  digitalWrite(RM1, LOW);
+  digitalWrite(RM2, HIGH);
+}
+
+
+// Stop robot
+void stopMotors()
+{
+  digitalWrite(LM1, LOW);
+  digitalWrite(LM2, LOW);
+
+  digitalWrite(RM1, LOW);
+  digitalWrite(RM2, LOW);
+}
